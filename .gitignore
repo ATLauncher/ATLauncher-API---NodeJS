@@ -32,3 +32,6 @@ node_modules
 
 # My test script with environment variables
 test
+
+# Test files
+tests/files/

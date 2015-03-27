@@ -73,8 +73,8 @@ module.exports = function (apiKey, forceRun) {
             }
         };
 
-        if (method == 'POST' && data) {
-            options.form = data;
+        if ((method == 'POST' || method == 'PUT' || method == 'DELETE') && data) {
+            options.body = data;
         }
 
         if (apiKey) {
@@ -149,34 +149,12 @@ module.exports = function (apiKey, forceRun) {
                 info: function (pack, callback) {
                     makeRequest(true, makeUrl('admin/pack/' + pack), 'GET', callback);
                 },
-                versions: {
-                    info: function (pack, version, callback) {
-                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version), 'GET', callback);
+                file: {
+                    delete: function (pack, folder, filename, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/file/' + folder + '/' + filename), 'DELETE', callback);
                     },
-                    xml: function (pack, version, saveTo, callback) {
-                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/xml'), 'GET', function (err, res) {
-                            if (saveTo && !callback) {
-                                callback = saveTo;
-
-                                return callback(err, res);
-                            }
-
-                            saveToFile(err, res, saveTo, callback);
-                        });
-                    },
-                    json: function (pack, version, saveTo, callback) {
-                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/json'), 'GET', function (err, res) {
-                            if (saveTo && !callback) {
-                                callback = saveTo;
-
-                                return callback(err, res);
-                            }
-
-                            saveToFile(err, res, saveTo, callback);
-                        });
-                    },
-                    configs: function (pack, version, saveTo, callback) {
-                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/configs'), 'GET', function (err, res) {
+                    download: function (pack, folder, filename, saveTo, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/file/' + folder + '/' + filename), 'GET', function (err, res) {
                             if (saveTo && !callback) {
                                 callback = saveTo;
 
@@ -185,6 +163,121 @@ module.exports = function (apiKey, forceRun) {
 
                             saveToFile(err, res, saveTo, true, callback);
                         });
+
+                    },
+                    put: function (pack, folder, filename, file, callback) {
+                        fs.readFile(file, 'utf-8', function (err, data) {
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/file/' + folder + '/' + filename), 'PUT', {data: new Buffer(data).toString('base64')}, callback);
+                        });
+                    }
+                },
+                files: function (pack, folder, callback) {
+                    makeRequest(true, makeUrl('admin/pack/' + pack + '/files/' + folder), 'GET', callback);
+                },
+                version: {
+                    info: function (pack, version, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version), 'GET', callback);
+                    },
+                    xml: {
+                        get: function (pack, version, saveTo, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/xml'), 'GET', function (err, res) {
+                                if (saveTo && !callback) {
+                                    callback = saveTo;
+
+                                    return callback(err, res);
+                                }
+
+                                saveToFile(err, res, saveTo, callback);
+                            });
+                        },
+                        put: function (pack, version, file, callback) {
+                            fs.readFile(file, 'utf-8', function (err, data) {
+                                if (err) {
+                                    return callback(err);
+                                }
+
+                                makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/xml'), 'PUT', {data: data}, callback);
+                            });
+                        }
+                    },
+                    json: {
+                        get: function (pack, version, saveTo, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/json'), 'GET', function (err, res) {
+                                if (saveTo && !callback) {
+                                    callback = saveTo;
+
+                                    return callback(err, res);
+                                }
+
+                                saveToFile(err, res, saveTo, callback);
+                            });
+                        }
+                    },
+                    configs: {
+                        get: function (pack, version, saveTo, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/configs'), 'GET', function (err, res) {
+                                if (saveTo && !callback) {
+                                    callback = saveTo;
+
+                                    return callback(err, res);
+                                }
+
+                                saveToFile(err, res, saveTo, true, callback);
+                            });
+                        },
+                        put: function (pack, version, file, callback) {
+                            fs.readFile(file, 'utf-8', function (err, data) {
+                                if (err) {
+                                    return callback(err);
+                                }
+
+                                makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/configs'), 'PUT', {data: new Buffer(data).toString('base64')}, callback);
+                            });
+                        }
+                    }
+                },
+                settings: {
+                    allowedplayers: {
+                        add: function (pack, usernames, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/allowedplayers'), 'POST', usernames, callback);
+                        },
+                        delete: function (pack, players, callback) {
+                            if (players && !callback) {
+                                callback = players;
+                                players = false;
+                            }
+
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/allowedplayers'), 'DELETE', (players ? players : []), callback);
+                        },
+                        get: function (pack, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/allowedplayers'), 'GET', callback);
+                        },
+                        set: function (pack, version, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/allowedplayers'), 'GET', callback);
+                        }
+                    },
+                    testers: {
+                        add: function (pack, usernames, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/testers'), 'POST', usernames, callback);
+                        },
+                        delete: function (pack, players, callback) {
+                            if (players && !callback) {
+                                callback = players;
+                                players = false;
+                            }
+
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/testers'), 'DELETE', (players ? players : []), callback);
+                        },
+                        get: function (pack, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/testers'), 'GET', callback);
+                        },
+                        set: function (pack, version, callback) {
+                            makeRequest(true, makeUrl('admin/pack/' + pack + '/settings/testers'), 'GET', callback);
+                        }
                     }
                 }
             }

@@ -21,6 +21,7 @@
 var atlauncher = require('../index')(process.env.API_KEY),
     assert = require('assert');
 
+
 atlauncher.admin.packs(function (err, res) {
     if (err) {
         return console.log(err);
@@ -38,8 +39,112 @@ if (process.env.PACK_NAME) {
         assert.equal(false, res.error);
     });
 
+    if (process.env.FOLDER_NAME) {
+        atlauncher.admin.pack.files(process.env.PACK_NAME, process.env.FOLDER_NAME, function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+        });
+
+        if (process.env.FILE_NAME) {
+            atlauncher.admin.pack.file.download(process.env.PACK_NAME, process.env.FOLDER_NAME, process.env.FILE_NAME, 'tests/files/a.jar', function (err, res) {
+                if (err) {
+                    return console.log(err);
+                }
+
+                assert.equal('Saved to tests/files/a.jar!', res);
+
+                atlauncher.admin.pack.file.delete(process.env.PACK_NAME, process.env.FOLDER_NAME, process.env.FILE_NAME, function (err, res) {
+                    if (err) {
+                        return console.log(err);
+                    }
+
+                    assert.equal(false, res.error);
+
+                    atlauncher.admin.pack.file.put(process.env.PACK_NAME, process.env.FOLDER_NAME, process.env.FILE_NAME, 'tests/files/a.jar', function (err, res) {
+                        if (err) {
+                            return console.log(err);
+                        }
+
+                        assert.equal(false, res.error);
+                    });
+                });
+            });
+        }
+    }
+
+    atlauncher.admin.pack.settings.allowedplayers.delete(process.env.PACK_NAME, function (err, res) {
+        if (err) {
+            return console.log(err);
+        }
+
+        assert.equal(false, res.error);
+
+        atlauncher.admin.pack.settings.allowedplayers.add(process.env.PACK_NAME, ['ryan1', 'ryan2'], function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+
+            atlauncher.admin.pack.settings.allowedplayers.delete(process.env.PACK_NAME, ['ryan1'], function (err, res) {
+                if (err) {
+                    return console.log(err);
+                }
+
+                assert.equal(false, res.error);
+
+                atlauncher.admin.pack.settings.allowedplayers.get(process.env.PACK_NAME, function (err, res) {
+                    if (err) {
+                        return console.log(err);
+                    }
+
+                    assert.equal(false, res.error);
+
+                    assert.deepEqual(['ryan2'], res.data);
+                });
+            });
+        });
+    });
+
+    atlauncher.admin.pack.settings.testers.delete(process.env.PACK_NAME, function (err, res) {
+        if (err) {
+            return console.log(err);
+        }
+
+        assert.equal(false, res.error);
+
+        atlauncher.admin.pack.settings.testers.add(process.env.PACK_NAME, ['ryan1', 'ryan2'], function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+
+            atlauncher.admin.pack.settings.testers.delete(process.env.PACK_NAME, ['ryan1'], function (err, res) {
+                if (err) {
+                    return console.log(err);
+                }
+
+                assert.equal(false, res.error);
+
+                atlauncher.admin.pack.settings.testers.get(process.env.PACK_NAME, function (err, res) {
+                    if (err) {
+                        return console.log(err);
+                    }
+
+                    assert.equal(false, res.error);
+
+                    assert.deepEqual(['ryan2'], res.data);
+                });
+            });
+        });
+    });
+
     if (process.env.VERSION_NAME) {
-        atlauncher.admin.pack.versions.info(process.env.PACK_NAME, process.env.VERSION_NAME, function (err, res) {
+        atlauncher.admin.pack.version.info(process.env.PACK_NAME, process.env.VERSION_NAME, function (err, res) {
             if (err) {
                 return console.log(err);
             }
@@ -47,7 +152,15 @@ if (process.env.PACK_NAME) {
             assert.equal(false, res.error);
         });
 
-        atlauncher.admin.pack.versions.xml(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.xml', function (err, res) {
+        atlauncher.admin.pack.version.xml.get(process.env.PACK_NAME, process.env.VERSION_NAME, 'tests/files/a.xml', function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal('Saved to tests/files/a.xml!', res);
+        });
+
+        atlauncher.admin.pack.version.xml.put(process.env.PACK_NAME, process.env.VERSION_NAME, 'tests/files/a.xml', function (err, res) {
             if (err) {
                 return console.log(err);
             }
@@ -55,15 +168,23 @@ if (process.env.PACK_NAME) {
             assert.equal(false, res.error);
         });
 
-        atlauncher.admin.pack.versions.json(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.json', function (err, res) {
+        atlauncher.admin.pack.version.json.get(process.env.PACK_NAME, process.env.VERSION_NAME, 'tests/files/a.json', function (err, res) {
             if (err) {
                 return console.log(err);
             }
 
-            assert.equal(false, res.error);
+            assert.equal('Saved to tests/files/a.json!', res);
         });
 
-        atlauncher.admin.pack.versions.configs(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.zip', function (err, res) {
+        atlauncher.admin.pack.version.configs.get(process.env.PACK_NAME, process.env.VERSION_NAME, 'tests/files/a.zip', function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal('Saved to tests/files/a.zip!', res);
+        });
+
+        atlauncher.admin.pack.version.configs.put(process.env.PACK_NAME, process.env.VERSION_NAME, 'tests/files/a.zip', function (err, res) {
             if (err) {
                 return console.log(err);
             }
