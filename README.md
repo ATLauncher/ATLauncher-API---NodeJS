@@ -7,7 +7,7 @@ Examples
 To get started simply require the package and optionally provide the arguments it needs.
 
 ```
-var api = require('./index.js')(API_KEY, FORCE);
+var api = require('atlauncher-api')(API_KEY, FORCE);
 ```
 
 The API_KEY argument is your API-KEY used for admin or PSP api calls.
@@ -17,7 +17,7 @@ The FORCE argument is a boolean (true/false) if we should ignore breaking api ca
 For instance for running public api calls such as getting a list of all packs you can use the following:
 
 ```
-var api = require('./index.js')();
+var api = require('atlauncher-api')();
 
 api.packs.full.all(function(err, res) {
     if (err) {
