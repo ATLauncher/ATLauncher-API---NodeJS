@@ -45,7 +45,7 @@ module.exports = function (apiKey, forceRun) {
 
         fs.writeFile(saveTo, data, function (e) {
             if (e) {
-                res = 'Error saving to ' + saveTo + '!';
+                return callback(e, res);
             } else {
                 res = 'Saved to ' + saveTo + '!';
             }
