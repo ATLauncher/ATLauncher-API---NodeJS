@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-module.exports = function (apiKey, forceRun) {
+module.exports = function (apiKey, forceRun, baseUrl, version) {
     var request = require('request'),
         fs = require('fs'),
-        baseUrl = 'https://api.atlauncher.com/',
-        version = 'v1',
+        baseUrl = baseUrl || 'https://api.atlauncher.com/',
+        version = version || 'v1',
         forceRun = forceRun || false;
 
     var makeUrl = function (path) {

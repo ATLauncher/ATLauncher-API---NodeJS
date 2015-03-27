@@ -1,6 +1,6 @@
 {
     "name": "atlauncher-api",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Node.js module for interacting with the ATLauncher API",
     "main": "index.js",
     "scripts": {
