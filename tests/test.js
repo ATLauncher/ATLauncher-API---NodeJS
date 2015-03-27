@@ -25,3 +25,8 @@ if (process.env.API_KEY) {
     console.log('Running admin API tests!');
     require('./admin.js');
 }
+
+if (process.env.PSP_API_KEY) {
+    console.log('Running PSP API tests!');
+    require('./psp.js');
+}

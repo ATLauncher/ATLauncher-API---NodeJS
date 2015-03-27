@@ -281,6 +281,29 @@ module.exports = function (apiKey, forceRun) {
                     }
                 }
             }
+        },
+        psp: {
+            pack: {
+                info: function (pack, callback) {
+                    makeRequest(false, makeUrl('psp/pack/' + pack), 'GET', callback);
+                },
+                version: {
+                    info: function (pack, version, callback) {
+                        makeRequest(false, makeUrl('psp/pack/' + pack + '/' + version), 'GET', callback);
+                    }
+                }
+            },
+            packs: {
+                all: function (callback) {
+                    makeRequest(false, makeUrl('psp/packs/all'), 'GET', callback);
+                },
+                public: function (callback) {
+                    makeRequest(false, makeUrl('psp/packs/public'), 'GET', callback);
+                },
+                semipublic: function (callback) {
+                    makeRequest(false, makeUrl('psp/packs/semipublic'), 'GET', callback);
+                }
+            }
         }
     };
 };
