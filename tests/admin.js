@@ -18,10 +18,13 @@
 
 'use strict';
 
-console.log('Running public API tests!');
-require('./public.js');
+var atlauncher = require('../index')(process.env.API_KEY),
+    assert = require('assert');
 
-if (process.env.API_KEY) {
-    console.log('Running admin API tests!');
-    require('./admin.js');
-}
+atlauncher.admin.packs(function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});

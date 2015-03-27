@@ -16,13 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-module.exports = function (apiKey) {
+module.exports = function (apiKey, forceRun) {
     var request = require('request'),
+        fs = require('fs'),
         baseUrl = 'https://api.atlauncher.com/',
-        version = 'v1';
+        version = 'v1',
+        forceRun = forceRun || false;
 
     var makeUrl = function (path) {
         return baseUrl + version + '/' + (path ? path : '');
+    };
+
+    // Lets make sure there is a key set before we allow the callback
+    var checkKey = function (callback) {
+        if (!apiKey) {
+            return console.error('An API Key must be set in order to make this request!');
+        }
+
+        return callback();
     };
 
     var makeRequest = function (path, method, data, callback) {
@@ -45,10 +56,19 @@ module.exports = function (apiKey) {
         }
 
         if (apiKey) {
-            options.headers.set('API-KEY', apiKey);
+            options.headers['API-KEY'] = apiKey;
         }
 
         request(options, function (err, req, body) {
+            if (!err && body.error && body.code == 401 && body.message == 'API key missing or invalid!') {
+                console.error('The API key provided was not valid!');
+            }
+
+            if (!err && body && body.code == 429 && !forceRun) {
+                // Exceeded API request limit, we must stop now
+                throw new Error(body.message);
+            }
+
             return callback(err, body);
         });
     };
@@ -56,6 +76,13 @@ module.exports = function (apiKey) {
     return {
         heartbeat: function (callback) {
             makeRequest(baseUrl, 'GET', callback);
+        },
+        pack: function (name, version, callback) {
+            if (version && !callback) {
+                makeRequest(makeUrl('pack/' + name), 'GET', version);
+            } else {
+                makeRequest(makeUrl('pack/' + name + '/' + version), 'GET', callback);
+            }
         },
         packs: {
             simple: function (callback) {
@@ -92,11 +119,11 @@ module.exports = function (apiKey) {
                 }
             }
         },
-        pack: function (name, version, callback) {
-            if (version && !callback) {
-                makeRequest(makeUrl('pack/' + name), 'GET', version);
-            } else {
-                makeRequest(makeUrl('pack/' + name + '/' + version), 'GET', callback);
+        admin: {
+            packs: function (callback) {
+                checkKey(function () {
+                    makeRequest(makeUrl('admin/packs'), 'GET', callback);
+                });
             }
         }
     };
