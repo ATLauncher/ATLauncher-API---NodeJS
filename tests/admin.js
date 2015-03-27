@@ -28,3 +28,47 @@ atlauncher.admin.packs(function (err, res) {
 
     assert.equal(false, res.error);
 });
+
+if (process.env.PACK_NAME) {
+    atlauncher.admin.pack.info(process.env.PACK_NAME, function (err, res) {
+        if (err) {
+            return console.log(err);
+        }
+
+        assert.equal(false, res.error);
+    });
+
+    if (process.env.VERSION_NAME) {
+        atlauncher.admin.pack.versions.info(process.env.PACK_NAME, process.env.VERSION_NAME, function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+        });
+
+        atlauncher.admin.pack.versions.xml(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.xml', function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+        });
+
+        atlauncher.admin.pack.versions.json(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.json', function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+        });
+
+        atlauncher.admin.pack.versions.configs(process.env.PACK_NAME, process.env.VERSION_NAME, 'a.zip', function (err, res) {
+            if (err) {
+                return console.log(err);
+            }
+
+            assert.equal(false, res.error);
+        });
+    }
+}

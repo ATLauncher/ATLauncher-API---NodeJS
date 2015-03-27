@@ -27,16 +27,38 @@ module.exports = function (apiKey, forceRun) {
         return baseUrl + version + '/' + (path ? path : '');
     };
 
-    // Lets make sure there is a key set before we allow the callback
-    var checkKey = function (callback) {
-        if (!apiKey) {
+    var saveToFile = function (err, res, saveTo, base64, callback) {
+        if (base64 && !callback) {
+            callback = base64;
+            base64 = false;
+        }
+
+        if (err || res.error) {
+            return callback(err, res);
+        }
+
+        var data = res.data;
+
+        if (base64) {
+            data = new Buffer(res.data, 'base64');
+        }
+
+        fs.writeFile(saveTo, data, function (e) {
+            if (e) {
+                res = 'Error saving to ' + saveTo + '!';
+            } else {
+                res = 'Saved to ' + saveTo + '!';
+            }
+
+            return callback(err, res);
+        });
+    };
+
+    var makeRequest = function (needsApiKey, path, method, data, callback) {
+        if (needsApiKey && !apiKey) {
             return console.error('An API Key must be set in order to make this request!');
         }
 
-        return callback();
-    };
-
-    var makeRequest = function (path, method, data, callback) {
         if (data && !callback) {
             callback = data;
             data = false;
@@ -75,55 +97,96 @@ module.exports = function (apiKey, forceRun) {
 
     return {
         heartbeat: function (callback) {
-            makeRequest(baseUrl, 'GET', callback);
+            makeRequest(false, baseUrl, 'GET', callback);
         },
         pack: function (name, version, callback) {
             if (version && !callback) {
-                makeRequest(makeUrl('pack/' + name), 'GET', version);
+                makeRequest(false, makeUrl('pack/' + name), 'GET', version);
             } else {
-                makeRequest(makeUrl('pack/' + name + '/' + version), 'GET', callback);
+                makeRequest(false, makeUrl('pack/' + name + '/' + version), 'GET', callback);
             }
         },
         packs: {
             simple: function (callback) {
-                makeRequest(makeUrl('packs/simple'), 'GET', callback);
+                makeRequest(false, makeUrl('packs/simple'), 'GET', callback);
             },
             full: {
                 all: function (callback) {
-                    makeRequest(makeUrl('packs/full/all'), 'GET', callback);
+                    makeRequest(false, makeUrl('packs/full/all'), 'GET', callback);
                 },
                 public: function (callback) {
-                    makeRequest(makeUrl('packs/full/public'), 'GET', callback);
+                    makeRequest(false, makeUrl('packs/full/public'), 'GET', callback);
                 },
                 semipublic: function (callback) {
-                    makeRequest(makeUrl('packs/full/semipublic'), 'GET', callback);
+                    makeRequest(false, makeUrl('packs/full/semipublic'), 'GET', callback);
                 },
                 private: function (callback) {
-                    makeRequest(makeUrl('packs/full/private'), 'GET', callback);
+                    makeRequest(false, makeUrl('packs/full/private'), 'GET', callback);
                 }
             }
         },
         stats: {
             downloads: {
                 all: function (callback) {
-                    makeRequest(makeUrl('stats/downloads/all'), 'GET', callback);
+                    makeRequest(false, makeUrl('stats/downloads/all'), 'GET', callback);
                 },
                 exe: function (callback) {
-                    makeRequest(makeUrl('stats/downloads/exe'), 'GET', callback);
+                    makeRequest(false, makeUrl('stats/downloads/exe'), 'GET', callback);
                 },
                 jar: function (callback) {
-                    makeRequest(makeUrl('stats/downloads/jar'), 'GET', callback);
+                    makeRequest(false, makeUrl('stats/downloads/jar'), 'GET', callback);
                 },
                 zip: function (callback) {
-                    makeRequest(makeUrl('stats/downloads/zip'), 'GET', callback);
+                    makeRequest(false, makeUrl('stats/downloads/zip'), 'GET', callback);
                 }
             }
         },
         admin: {
             packs: function (callback) {
-                checkKey(function () {
-                    makeRequest(makeUrl('admin/packs'), 'GET', callback);
-                });
+                makeRequest(true, makeUrl('admin/packs'), 'GET', callback);
+            },
+            pack: {
+                info: function (pack, callback) {
+                    makeRequest(true, makeUrl('admin/pack/' + pack), 'GET', callback);
+                },
+                versions: {
+                    info: function (pack, version, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version), 'GET', callback);
+                    },
+                    xml: function (pack, version, saveTo, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/xml'), 'GET', function (err, res) {
+                            if (saveTo && !callback) {
+                                callback = saveTo;
+
+                                return callback(err, res);
+                            }
+
+                            saveToFile(err, res, saveTo, callback);
+                        });
+                    },
+                    json: function (pack, version, saveTo, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/json'), 'GET', function (err, res) {
+                            if (saveTo && !callback) {
+                                callback = saveTo;
+
+                                return callback(err, res);
+                            }
+
+                            saveToFile(err, res, saveTo, callback);
+                        });
+                    },
+                    configs: function (pack, version, saveTo, callback) {
+                        makeRequest(true, makeUrl('admin/pack/' + pack + '/versions/' + version + '/configs'), 'GET', function (err, res) {
+                            if (saveTo && !callback) {
+                                callback = saveTo;
+
+                                return callback(err, res);
+                            }
+
+                            saveToFile(err, res, saveTo, true, callback);
+                        });
+                    }
+                }
             }
         }
     };
