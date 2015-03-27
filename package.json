@@ -12,7 +12,7 @@
         "minecraft",
         "api"
     ],
-    "author": "RyanTheAllmighty",
+    "author": "ATLauncher",
     "license": "GNU GPLv3",
     "bugs": {
         "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS/issues"
