@@ -1,0 +1,24 @@
+{
+    "name": "atlauncher-api",
+    "version": "1.0.0",
+    "description": "Node.js module for interacting with the ATLauncher API",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS.git"
+    },
+    "keywords": [
+        "atlauncher",
+        "minecraft",
+        "api"
+    ],
+    "author": "RyanTheAllmighty",
+    "license": "GNU GPLv3",
+    "bugs": {
+        "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS/issues"
+    },
+    "homepage": "https://github.com/ATLauncher/ATLauncher-API---NodeJS",
+    "dependencies": {
+        "request": "^2.54.0"
+    }
+}
