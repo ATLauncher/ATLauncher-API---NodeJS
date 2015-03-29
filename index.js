@@ -155,6 +155,9 @@ module.exports = function (obj) {
         },
         stats: {
             downloads: {
+                overview: function (callback) {
+                    makeRequest(false, makeUrl('stats/downloads'), 'GET', callback);
+                },
                 all: function (callback) {
                     makeRequest(false, makeUrl('stats/downloads/all'), 'GET', callback);
                 },
