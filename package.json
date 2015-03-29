@@ -1,27 +1,28 @@
 {
-    "name": "atlauncher-api",
-    "version": "1.0.3",
-    "description": "Node.js module for interacting with the ATLauncher API",
-    "main": "index.js",
-    "scripts": {
-        "test": "node tests/test.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS.git"
-    },
-    "keywords": [
-        "atlauncher",
-        "minecraft",
-        "api"
-    ],
-    "author": "ATLauncher",
-    "license": "GNU GPLv3",
-    "bugs": {
-        "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS/issues"
-    },
-    "homepage": "https://github.com/ATLauncher/ATLauncher-API---NodeJS",
-    "dependencies": {
-        "request": "^2.54.0"
-    }
+  "name": "atlauncher-api",
+  "version": "1.1.0",
+  "description": "Node.js module for interacting with the ATLauncher API",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS.git"
+  },
+  "keywords": [
+    "atlauncher",
+    "minecraft",
+    "api"
+  ],
+  "author": "ATLauncher",
+  "license": "GNU GPLv3",
+  "bugs": {
+    "url": "https://github.com/ATLauncher/ATLauncher-API---NodeJS/issues"
+  },
+  "homepage": "https://github.com/ATLauncher/ATLauncher-API---NodeJS",
+  "dependencies": {
+    "merge": "^1.2.0",
+    "request": "^2.54.0"
+  }
 }

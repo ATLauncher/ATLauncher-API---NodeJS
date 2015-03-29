@@ -16,15 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-module.exports = function (apiKey, forceRun, baseUrl, version) {
+module.exports = function (obj) {
     var request = require('request'),
         fs = require('fs'),
-        baseUrl = baseUrl || 'https://api.atlauncher.com/',
-        version = version || 'v1',
-        forceRun = forceRun || false;
+        merge = require('merge');
+
+    var settings = {
+        base_url: 'https://api.atlauncher.com/',
+        api_version: 'v1',
+        api_key: false,
+        force_run: false
+    };
+
+    if (obj !== undefined) {
+        settings = merge(settings, obj);
+    }
 
     var makeUrl = function (path) {
-        return baseUrl + version + '/' + (path ? path : '');
+        return settings.base_url + settings.api_version + '/' + (path ? path : '');
     };
 
     var saveToFile = function (err, res, saveTo, base64, callback) {
@@ -55,7 +64,7 @@ module.exports = function (apiKey, forceRun, baseUrl, version) {
     };
 
     var makeRequest = function (needsApiKey, path, method, data, callback) {
-        if (needsApiKey && !apiKey) {
+        if (needsApiKey && !settings.api_key) {
             return console.error('An API Key must be set in order to make this request!');
         }
 
@@ -77,8 +86,8 @@ module.exports = function (apiKey, forceRun, baseUrl, version) {
             options.body = data;
         }
 
-        if (apiKey) {
-            options.headers['API-KEY'] = apiKey;
+        if (settings.api_key) {
+            options.headers['API-KEY'] = settings.api_key;
         }
 
         request(options, function (err, req, body) {
@@ -86,7 +95,7 @@ module.exports = function (apiKey, forceRun, baseUrl, version) {
                 console.error('The API key provided was not valid!');
             }
 
-            if (!err && body && body.code == 429 && !forceRun) {
+            if (!err && body && body.code == 429 && !settings.force_run) {
                 // Exceeded API request limit, we must stop now
                 throw new Error(body.message);
             }
@@ -97,7 +106,7 @@ module.exports = function (apiKey, forceRun, baseUrl, version) {
 
     return {
         heartbeat: function (callback) {
-            makeRequest(false, baseUrl, 'GET', callback);
+            makeRequest(false, settings.base_url, 'GET', callback);
         },
         pack: function (name, version, callback) {
             if (version && !callback) {

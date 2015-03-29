@@ -18,7 +18,9 @@
 
 'use strict';
 
-var atlauncher = require('../index')(process.env.PSP_API_KEY),
+var atlauncher = require('../index')({
+        api_key: process.env.PSP_API_KEY
+    }),
     assert = require('assert');
 
 atlauncher.psp.packs.all(function (err, res) {
