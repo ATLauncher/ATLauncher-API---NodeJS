@@ -19,7 +19,8 @@
 'use strict';
 
 var atlauncher = require('../index')({
-        api_key: process.env.API_KEY
+        api_key: process.env.API_KEY,
+        return_full: true
     }),
     assert = require('assert');
 

@@ -25,7 +25,7 @@ module.exports = function (obj) {
         base_url: 'https://api.atlauncher.com/',
         api_version: 'v1',
         api_key: false,
-        force_run: false
+        return_full: false
     };
 
     if (obj !== undefined) {
@@ -56,10 +56,8 @@ module.exports = function (obj) {
             if (e) {
                 return callback(e, res);
             } else {
-                res = 'Saved to ' + saveTo + '!';
+                return callback(err, 'Saved to ' + saveTo + '!');
             }
-
-            return callback(err, res);
         });
     };
 
@@ -91,16 +89,11 @@ module.exports = function (obj) {
         }
 
         request(options, function (err, req, body) {
-            if (!err && body.error && body.code == 401 && body.message == 'API key missing or invalid!') {
-                console.error('The API key provided was not valid!');
+            if (body.error) {
+                return callback(new Error(body.message))
             }
 
-            if (!err && body && body.code == 429 && !settings.force_run) {
-                // Exceeded API request limit, we must stop now
-                throw new Error(body.message);
-            }
-
-            return callback(err, body);
+            return callback(err, (settings.return_full ? body : body.data));
         });
     };
 
