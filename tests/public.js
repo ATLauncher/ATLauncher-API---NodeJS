@@ -32,6 +32,30 @@ atlauncher.heartbeat(function (err, res) {
     assert.equal(false, res.error);
 });
 
+atlauncher.leaderboards.global(function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});
+
+atlauncher.leaderboards.country('AU', function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});
+
+atlauncher.leaderboards.pack('VanillaMinecraft', function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});
+
 atlauncher.packs.simple(function (err, res) {
     if (err) {
         return console.log(err);

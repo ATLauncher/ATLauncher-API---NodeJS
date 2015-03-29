@@ -101,6 +101,32 @@ module.exports = function (obj) {
         heartbeat: function (callback) {
             makeRequest(false, settings.base_url, 'GET', callback);
         },
+        leaderboards: {
+            global: function (limit, callback) {
+                if (limit && !callback) {
+                    callback = limit;
+                    limit = 30;
+                }
+
+                makeRequest(false, makeUrl('leaderboards/global/' + limit), 'GET', callback);
+            },
+            pack: function (name, limit, callback) {
+                if (limit && !callback) {
+                    callback = limit;
+                    limit = 30;
+                }
+
+                makeRequest(false, makeUrl('leaderboards/pack/' + name + '/' + limit), 'GET', callback);
+            },
+            country: function (country_code, limit, callback) {
+                if (limit && !callback) {
+                    callback = limit;
+                    limit = 30;
+                }
+
+                makeRequest(false, makeUrl('leaderboards/country/' + country_code + '/' + limit), 'GET', callback);
+            }
+        },
         pack: function (name, version, callback) {
             if (version && !callback) {
                 makeRequest(false, makeUrl('pack/' + name), 'GET', version);
