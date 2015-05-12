@@ -153,6 +153,11 @@ module.exports = function (obj) {
                 }
             }
         },
+        sharecode: {
+            info: function (code, callback) {
+                makeRequest(false, makeUrl('share-codes/' + code), 'GET', callback);
+            }
+        },
         stats: {
             downloads: {
                 overview: function (callback) {

@@ -96,6 +96,22 @@ atlauncher.packs.full.private(function (err, res) {
     assert.equal(false, res.error);
 });
 
+atlauncher.sharecode.info(process.env.SHARE_CODE, function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});
+
+atlauncher.stats.downloads.overview(function (err, res) {
+    if (err) {
+        return console.log(err);
+    }
+
+    assert.equal(false, res.error);
+});
+
 atlauncher.stats.downloads.all(function (err, res) {
     if (err) {
         return console.log(err);
